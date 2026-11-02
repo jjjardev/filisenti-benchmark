@@ -1,16 +1,16 @@
-# jjjardev Filipino Sentiment Models
+# FiliSenti Benchmark
 
-Zero-shot benchmark results for three Filipino sentiment classifiers: `jjjardev/tagasenti_model`, `jjjardev/filisenti`, and `jjjardev/hilisenti-v1-model`. The benchmark compares them with 10 public models on four test sets.
+Zero-shot benchmark for three Filipino sentiment classifiers: `jjjardev/tagasenti_model`, `jjjardev/filisenti`, and `jjjardev/hilisenti-v1-model`. The run compares them with 10 public models on four test sets.
 
 ## Overview
 
 `jjjardev/tagasenti_model` scores 0.8475 macro F1 on the TagaSenti test split. `jjjardev/filisenti` scores 0.9327 on the same split and 0.9272 on Hiligaynon. Across the four test sets, FiliSenti has the highest mean macro F1 among 3-class models at 0.8276. HiliSenti follows at 0.7549, TagaSenti sits at 0.7190, and the strongest 3-class model outside the jjjardev family, cardiffnlp, reaches 0.6492. The top three mean scores belong to jjjardev models.
 
-The benchmark is zero-shot. No model is fine-tuned on the test sets. The same text and label space run through the same scoring code for every model. Full results are in `benchmark_results.csv`.
+The run is zero-shot, with no fine-tuning on test data. The same text and label space run through the same scoring code for every model. Full results are in `benchmark_results.csv`.
 
 ## Results
 
-Macro F1 by test set. The Mean column averages the four scores. Binary-only models are excluded from the mean and from the table because a model that never outputs neutral cannot be scored fairly on a three-class test.
+Macro F1 by test set. Mean averages the four scores. Binary-only models are excluded from the mean and the table because a model that never outputs neutral cannot be scored fairly on a three-class test.
 
 | Model | TagaSenti | Hiligaynon | Shopee binary | MTEB Shopee | Mean |
 |---|---:|---:|---:|---:|---:|
@@ -33,15 +33,34 @@ Macro F1 by test set. The Mean column averages the four scores. Binary-only mode
 | `jjjardev/hilisenti-v1-model` | Hiligaynon | 0.9287 Hiligaynon | Hiligaynon only |
 | `jjjardev/tagasenti_model` | Tagalog and Taglish | 0.8475 TagaSenti | Tagalog specialist |
 
-`tagasenti_model` is the Tagalog model. It scores 0.8475 on the TagaSenti test set and 0.8768 on the binary Shopee set. Its Hiligaynon score drops to 0.5850. Its MTEB score drops further, to 0.5665, with neutral recall at 0.1825. The drop on Hiligaynon is expected. The model is trained for Tagalog and Taglish, not for cross-lingual transfer into another Philippine language.
+`tagasenti_model` is the Tagalog model. It scores 0.8475 on TagaSenti and 0.8768 on the binary Shopee set. Its Hiligaynon score drops to 0.5850. Its MTEB score drops further, to 0.5665, with neutral recall at 0.1825. The Hiligaynon drop is expected. The model is trained for Tagalog and Taglish, not cross-lingual transfer.
 
-`filisenti` covers both languages and leads the table. `hilisenti-v1-model` is the Hiligaynon specialist. All three models are available on the Hugging Face Hub.
+`filisenti` covers both languages and leads the table. `hilisenti-v1-model` is the Hiligaynon specialist. All three are on the Hugging Face Hub.
 
 ## Interpreting the results
 
-The TagaSenti and Hiligaynon columns give the cleanest comparison, and every 3-class model runs on both. The TagaSenti test split holds 743 negative rows, 653 neutral, and 604 positive. The Hiligaynon split has fewer neutral rows. The Shopee binary column favors models trained on e-commerce reviews, so several models from other authors close the gap there. The MTEB column is the hardest. Its neutral class is a single star rating, and most models miss a large share of that class.
+The TagaSenti and Hiligaynon columns give the cleanest comparison, and every 3-class model runs on both. The TagaSenti test split holds 743 negative rows, 653 neutral, and 604 positive. Hiligaynon has fewer neutral rows. Shopee binary favors models trained on e-commerce reviews, so several other authors close the gap there. The MTEB column is the hardest. Its neutral class is a single star rating, and most models miss a large share of that class.
 
 FiliSenti's lead tracks the combined-language training set. Training on Tagalog and Hiligaynon gives a smaller cross-lingual penalty on Hiligaynon than TagaSenti carries. HiliSenti is the reverse: strong on Hiligaynon, weak on Tagalog. TagaSenti is the Tagalog specialist, and its 0.8475 is the number to compare against the published TagaSenti result.
+
+## Against DOST-ASTI
+
+The comparison to study is `dost-asti/RoBERTa-tl-sentiment-analysis`. DOST-ASTI is a publicly funded research institute. Its model card lists more than 8 million training instances, an Nvidia V100-32GB, and the COARE computing facility. That is real infrastructure.
+
+It scores 0.4926 macro F1 on TagaSenti. `tagasenti_model` scores 0.8475 on the same 2,000 rows. `filisenti` scores 0.9327.
+
+The neutral class is the clearest split. DOST-ASTI recalls 0.1930 of neutral reviews. `tagasenti_model` recalls 0.8515. Both models saw the same labels and text. A Tagalog model from a government lab missed about four of every five neutral reviews.
+
+| Test set | dost-asti | tagasenti_model | filisenti |
+|---|---:|---:|---:|
+| TagaSenti | 0.4926 | 0.8475 | 0.9327 |
+| Hiligaynon | 0.4687 | 0.5850 | 0.9272 |
+| Shopee binary | 0.7827 | 0.8768 | 0.8825 |
+| MTEB Shopee | 0.4490 | 0.5665 | 0.5680 |
+
+Every jjjardev model beats DOST-ASTI on every test set. The Tagalog column matters most, since DOST-ASTI trained for Tagalog. The margin is 0.3549 against `tagasenti_model` and 0.4401 against `filisenti`. On Hiligaynon, FiliSenti reaches 0.9272 against 0.4687. The MTEB gap is the smallest, near 0.12, and it does not flip.
+
+Fairness note. DOST-ASTI built its model for general Tagalog sentiment, not for these splits. Four models in this run ship without a usable label order, and DOST-ASTI is one, so the notebook probes it first. A probe mistake could move the row, but not by 0.35. The gap is bigger than the uncertainty.
 
 ## Benchmark design
 
@@ -52,9 +71,9 @@ FiliSenti's lead tracks the combined-language training set. Training on Tagalog 
 | `shopee_binary` | 1,000 | negative, positive | scaredmeow binary test split |
 | `mteb_shopee_3class` | 2,000 | negative, neutral, positive | MTEB test split, five stars mapped to three classes |
 
-The TagaSenti split is rebuilt from a single CSV, and the other three sets come from released test splits. Each set is capped to keep the full run inside a free Colab session.
+The TagaSenti split is rebuilt from a single CSV. The other three come from released test splits. Each set is capped to fit a free Colab session.
 
-Models with explicit `id2label` mappings use those labels. Four models have no usable label names, so the notebook probes each model with two sentences per sentiment and prints the inferred order. Two-label models run only on the binary set. Three-class models on the binary set have their negative and positive probabilities renormalized. The CSV records accuracy, macro F1, per-class recall, and the row count.
+Models with explicit `id2label` mappings use those labels. Four models have no usable label names, so the notebook probes each with two sentences per sentiment and prints the inferred order. Two-label models run only on the binary set. Three-class models on the binary set have their negative and positive probabilities renormalized. The CSV records accuracy, macro F1, per-class recall, and the row count.
 
 ## Reproduce
 
@@ -80,13 +99,13 @@ Replace the model ID with `jjjardev/filisenti` or `jjjardev/hilisenti-v1-model` 
 
 ## Limitations
 
-The TagaSenti test split may not match the published split. It is reconstructed from a single CSV. Each set is capped, which keeps the run fast but widens the confidence interval. Four models have no documented label order, so their scores depend on the probe sentences. `raphgonda/FilipinoShopping` is absent because the repository ships TensorFlow weights only and the notebook loads PyTorch. MENG21 uses an English BERT base on a Filipino task. Its all-negative collapse makes that row a floor rather than a fair comparison.
+The TagaSenti test split is rebuilt from a single CSV and may not match the published split. Each set is capped, which keeps the run fast but widens the confidence interval. Four models have no documented label order, so their scores depend on the probe sentences. `raphgonda/FilipinoShopping` is absent because the repository ships TensorFlow weights only and the notebook loads PyTorch. MENG21 uses an English BERT base on a Filipino task. Its all-negative collapse makes that row a floor rather than a fair comparison.
 
 None of these caveats changes the top three. Read the notebook before citing the table in a paper.
 
 ## Licenses
 
-The code, notebook, and files in this repository use the MIT license. See `LICENSE`. The model weights and datasets keep their own terms, so check the model cards and dataset cards before commercial use.
+The code, notebook, and files in this repository use the MIT license. See `LICENSE`. The model weights and datasets keep their own terms, so check the cards before commercial use.
 
 ## Links
 
