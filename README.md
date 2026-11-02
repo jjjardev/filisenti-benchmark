@@ -3,14 +3,15 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Hugging Face](https://img.shields.io/badge/Hugging%20Face-jjjardev-yellow.svg)](https://huggingface.co/jjjardev)
 
-A benchmark for three Filipino sentiment classifiers from jjjardev: `filisenti`, `hilisenti-v1-model`, and `tagasenti_model`. The run covers 13 models, seven test sets, and 81 scored rows. Six sets are scoring sets. The seventh is a contamination probe. Every score in this README comes from `benchmark_results.csv`.
+FiliSenti Benchmark measures three Filipino sentiment classifiers from jjjardev against ten public models on seven test sets. Six sets produce scores. The seventh is a contamination probe. The run totals 81 rows across 13 models. Every score in this README comes from `benchmark_results.csv`.
 
 ## Contents
 
-- [What changed in this version](#what-changed-in-this-version)
-- [Headline results](#headline-results)
+- [At a glance](#at-a-glance)
 - [Results](#results)
-- [The new sets](#the-new-sets)
+- [Scoreboard](#scoreboard)
+- [Binary models](#binary-models)
+- [The test sets](#the-test-sets)
 - [The neutral problem](#the-neutral-problem)
 - [What is clean and what is home turf](#what-is-clean-and-what-is-home-turf)
 - [Against DOST-ASTI](#against-dost-asti)
@@ -22,28 +23,21 @@ A benchmark for three Filipino sentiment classifiers from jjjardev: `filisenti`,
 - [Usage](#usage)
 - [Repository layout](#repository-layout)
 - [Citation](#citation)
-- [Changelog](#changelog)
+- [Corrections](#corrections)
 - [License](#license)
 
-## What changed in this version
+## At a glance
 
-The first release had four test sets. This version adds three.
+- `filisenti` leads the six-set mean at 0.7572. `hilisenti-v1-model` follows at 0.7024 and `tagasenti_model` at 0.6873. The best model outside the family, `immortalizing-legacies/immortalizing-legacies-sentiment`, reaches 0.6206.
+- The family takes four of the six test columns. It loses Shopee binary to a binary specialist and MTEB to immortalizing.
+- On the human-annotated Taglish set, `tagasenti_model` leads at 0.6338 and finds 0.5895 of neutral rows, the best neutral recall in the run.
+- `filisenti` has the highest six-set mean, but its TagaSenti cell needs an overlap check. Without TagaSenti, its lead over HiliSenti falls from 0.0548 to 0.0083.
 
-`taglish_annotated_3class` is a 2,000-row Taglish e-commerce set with human-annotated neutral labels. It targets the exact weakness that the star-derived MTEB set exposes. `lazada_stars_3class` adds a second e-commerce platform with star-derived labels. `gadgets_train_probe` is not a scoring set. It is the training data of `magixxixx/roberta-shopee-sentiment-gadgets`, included to show what home-turf memorization looks like next to a held-out score.
-
-The repository now has one notebook, one chart, and one results CSV. The old four-set files are gone. The new notebook is `filisenti_benchmark_colab.ipynb`.
-
-## Headline results
-
-The three jjjardev models hold the top three six-set means. `filisenti` leads at 0.7572. `hilisenti-v1-model` follows at 0.7024, and `tagasenti_model` sits at 0.6873. The best model outside the family, `immortalizing-legacies/immortalizing-legacies-sentiment`, reaches 0.6206. `cardiffnlp` follows at 0.6201. The family also holds the top three on the five-set mean without TagaSenti: 0.7221, 0.7138, and 0.6552.
-
-The lead is not uniform. On the two new scoring sets, `tagasenti_model` leads at 0.6240, immortalizing is second at 0.6216, `filisenti` is third at 0.6163, and `hilisenti-v1-model` is fourth at 0.5974. On the human-annotated Taglish set, `tagasenti_model` scores 0.6338 against 0.6210 for immortalizing and 0.5982 for `filisenti`. On the Lazada set, `filisenti` leads at 0.6344, with `hilisenti-v1-model` at 0.6300, immortalizing at 0.6221, and `tagasenti_model` at 0.6141.
-
-The family has specialists. It does not have one model that wins every set. That is a better result than a clean sweep would be, because the new sets show where each checkpoint belongs.
+The family's third-place model, `tagasenti_model`, still clears the best outsider by 0.0667. The gap inside the family is not as wide. No single checkpoint is best on every set, and the README treats that as a finding rather than a problem to hide.
 
 ## Results
 
-Macro F1 by scoring set. The Mean column weights each set equally. It is a summary of this table, not a claim about production traffic. Binary-only models are excluded from the mean and the table because a model that never outputs neutral cannot be scored fairly on a three-class test. `gadgets_train_probe` is excluded because it is a training set for one model, not a test set.
+Macro F1 by scoring set. The Mean column weights each set equally. It summarizes this table, not production traffic. Binary-only models are excluded from the mean and the table because a model that never outputs neutral cannot be scored fairly on a three-class test. `gadgets_train_probe` is excluded because it is a training set for one model, not a test set.
 
 | Model | TagaSenti | Hiligaynon | Shopee binary | MTEB Shopee | Taglish annotated | Lazada stars | Mean |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -60,11 +54,43 @@ Macro F1 by scoring set. The Mean column weights each set equally. It is a summa
 
 ![Macro F1 by model and test set](benchmark_chart.png)
 
-The six-set means are lower than the old four-set means because the new sets are harder. `filisenti` drops from 0.8276 to 0.7572, `hilisenti-v1-model` from 0.7549 to 0.7024, and `tagasenti_model` from 0.7190 to 0.6873. That is the point of adding harder data. A benchmark that only goes up is not measuring much.
+The six-set mean is pulled down by the shared neutral weakness and by the cross-platform Lazada rows. The family averages 0.7572, 0.7024, and 0.6873, not the 0.83 to 0.93 range that the home-language columns suggest. That is the point. A benchmark that only goes up is not measuring much.
 
-Three binary checkpoints sit outside this table. `scaredmeow/xlnet-tagalog-sentiment-shopee` scores 0.9480 on the Shopee binary set, `The-Thesis-Gods/lazada-xlm-roberta-sentiment` scores 0.8917, and `scaredmeow/roberta-tagalog-sentiment-shopee` scores 0.9090. The last one appears on the three-class sets in the CSV with zero neutral recall, which is exactly why it is not ranked here.
+## Scoreboard
 
-## The new sets
+| Test set | Top score | Model | Best family score | Model |
+|---|---:|---|---:|---|
+| TagaSenti | 0.9327 | jjjardev/filisenti * | 0.8475 | jjjardev/tagasenti_model |
+| Hiligaynon | 0.9287 | jjjardev/hilisenti-v1-model | 0.9287 | jjjardev/hilisenti-v1-model |
+| Shopee binary | 0.9480 | scaredmeow/xlnet-tagalog-sentiment-shopee | 0.8825 | jjjardev/filisenti |
+| MTEB Shopee | 0.5881 | immortalizing-legacies/immortalizing-legacies-sentiment | 0.5680 | jjjardev/filisenti |
+| Taglish annotated | 0.6338 | jjjardev/tagasenti_model | 0.6338 | jjjardev/tagasenti_model |
+| Lazada stars | 0.6344 | jjjardev/filisenti | 0.6344 | jjjardev/filisenti |
+| Six-set mean | 0.7572 | jjjardev/filisenti * | 0.7572 | jjjardev/filisenti |
+
+The asterisk flags a cell that needs an overlap check. `filisenti`'s TagaSenti score is likely in-domain because its card says it trained on the full TagaSenti CSV and re-split it. The clean family result on TagaSenti is `tagasenti_model` at 0.8475.
+
+## Binary models
+
+Binary models are useful and should not be compared on a three-class test. This table gives them their own space.
+
+| Model | Type | Shopee binary | Gadgets probe |
+|---|---|---:|---:|
+| scaredmeow/xlnet-tagalog-sentiment-shopee | binary | 0.9480 | 0.9480 |
+| immortalizing-legacies/immortalizing-legacies-sentiment | 3-class | 0.9120 | 0.9249 |
+| scaredmeow/roberta-tagalog-sentiment-shopee | binary | 0.9090 | 0.8780 |
+| The-Thesis-Gods/lazada-xlm-roberta-sentiment | binary | 0.8917 | 0.9057 |
+| cardiffnlp/twitter-xlm-roberta-base-sentiment | 3-class | 0.8860 | 0.8990 |
+| jjjardev/filisenti | 3-class | 0.8825 | 0.8747 |
+| jjjardev/hilisenti-v1-model | 3-class | 0.8808 | 0.8997 |
+| jjjardev/tagasenti_model | 3-class | 0.8768 | 0.8619 |
+| magixxixx/roberta-shopee-sentiment-gadgets | 3-class | 0.6922 | 0.9609 * |
+
+The probe column is not a ranking. `magixxixx` trained on those rows, so its 0.9609 is a train-set check. Every other model sees the probe cold. The gap between 0.9609 and its 0.6922 on Shopee binary is the clearest evidence in the repo that home turf moves scores.
+
+## The test sets
+
+Each set earns its slot for a different reason. TagaSenti tests multi-domain Tagalog. Hiligaynon tests a second Philippine language with few public models. Shopee binary tests a two-label e-commerce task. MTEB tests star-derived neutral. Taglish annotated tests human-annotated neutral. Lazada tests a second e-commerce platform. The gadgets probe tests contamination. The next three subsections explain the sets that need the most context.
 
 ### Taglish annotated
 
@@ -72,7 +98,7 @@ Three binary checkpoints sit outside this table. `scaredmeow/xlnet-tagalog-senti
 
 `tagasenti_model` leads at 0.6338. Immortalizing follows at 0.6210, `filisenti` at 0.5982, and `hilisenti-v1-model` at 0.5648. The margin over immortalizing is 0.0128, which is inside the noise band for 190 neutral rows. Read the result as "the Tagalog specialist is competitive at the top," not as a decisive win. The useful signal is the neutral recall: `tagasenti_model` finds 0.5895 of neutral rows, the best in the run. `filisenti` finds 0.5053, and `hilisenti-v1-model` finds 0.3474.
 
-This set also has a coverage limit. It is Taglish e-commerce text. It says nothing about news, student feedback, or formal Tagalog.
+The set also has a coverage limit. It is Taglish e-commerce text. It says nothing about news, student feedback, or formal Tagalog.
 
 ### Lazada stars
 
@@ -80,7 +106,7 @@ This set also has a coverage limit. It is Taglish e-commerce text. It says nothi
 
 `filisenti` leads at 0.6344, with `hilisenti-v1-model` at 0.6300, immortalizing at 0.6221, and `tagasenti_model` at 0.6141. The neutral recall tells a different story. `hilisenti-v1-model` finds 0.5528 of neutral rows, immortalizing finds 0.5122, `filisenti` finds 0.2683, and `tagasenti_model` finds 0.2276. The star-derived neutral bucket is small and noisy, and the Tagalog models miss it. HiliSenti's advantage on this set is real, but it does not carry over to the human-annotated Taglish neutral set.
 
-### Gadgets train probe
+### Gadgets probe
 
 `gadgets_train_probe` is 1,000 binary rows from the training data of `magixxixx/roberta-shopee-sentiment-gadgets`. The class balance is even at 500 negative and 500 positive. It is not a scoring set.
 
@@ -102,7 +128,7 @@ No model is best on every neutral axis. That is the honest read of this table.
 
 ## What is clean and what is home turf
 
-No test set is equally clean for every model. This table marks the main issue for each column.
+No test set is equally clean for every model. This table flags the main issue for each column.
 
 | Test set | Cleanest reading | Home turf or caveat |
 |---|---|---|
@@ -111,7 +137,7 @@ No test set is equally clean for every model. This table marks the main issue fo
 | Shopee binary | No exact file overlap is known | Shopee domain is favorable to TagaSenti and several baselines |
 | MTEB Shopee | No exact file overlap is known | Star-derived neutral is noisy, and Shopee is a familiar domain |
 | Taglish annotated | No main model trained on this file | Domain-adjacent to TagaSenti, only 190 neutral rows |
-| Lazada stars | No main model trained on this file | Home turf for the Thesis binary model, star-neutral is noisy |
+| Lazada stars | No three-class model trained on this file | Home turf for the Thesis binary model, star-neutral is noisy |
 | Gadgets probe | Not a scoring set | Training data for `magixxixx` |
 
 This is why the README reports six-set and five-set means. The six-set mean is the headline. The five-set mean drops TagaSenti and shows how much of the lead depends on that one column.
@@ -139,9 +165,12 @@ The label order for DOST-ASTI is inferred from probe sentences. The notebook inc
 
 The model card says `filisenti` trained on 35,686 TagaSenti rows, which is the full CSV, then re-split the combined corpus 80/10/10. The benchmark's TagaSenti test is a different split of the same CSV. That means a large share of the benchmark's TagaSenti rows were likely in the model's training pool. The 0.9327 should be read as in-domain until a row-level overlap check proves otherwise. It is also higher than the 0.881 Tagalog score reported on the model's own card, which is another reason to check.
 
-Drop TagaSenti and the picture changes. On the five remaining scoring sets, `filisenti` averages 0.7221, `hilisenti-v1-model` averages 0.7138, and `tagasenti_model` averages 0.6552. The family still holds the top three. The FiliSenti lead over HiliSenti falls from 0.0548 to 0.0083, which is noise.
+| Slice | filisenti | hilisenti-v1-model | tagasenti_model |
+|---|---:|---:|---:|
+| Six scoring sets | 0.7572 | 0.7024 | 0.6873 |
+| Five sets, no TagaSenti | 0.7221 | 0.7138 | 0.6552 |
 
-This is the main open item in the benchmark. A hash-based overlap check between each model's training data and each test set would settle it. Until then, the top-three family claim is safe. The claim that FiliSenti is clearly the best single model is not.
+The family still holds the top three on both slices. The FiliSenti lead over HiliSenti falls from 0.0548 to 0.0083, which is noise. This is the main open item in the benchmark. A hash-based overlap check between each model's training data and each test set would settle it. Until then, the top-three family claim is safe. The claim that FiliSenti is clearly the best single model is not.
 
 ## Models
 
@@ -178,7 +207,7 @@ The last row points outside the family on purpose. If the task never needs neutr
 | `lazada_stars_3class` | 1,001 | neg, neu, pos | 380 / 123 / 498 | `EricEchemane` Lazada reviews, packaged by SEACrowd | Scoring |
 | `gadgets_train_probe` | 1,000 | neg, pos | 500 / 500 | `magixxixx` computer-category training CSV | Contamination probe |
 
-The TagaSenti split is rebuilt from a single CSV. The other sets come from released files or public repositories. Each scoring set is capped at 2,000 rows, and the binary sets at 1,000, to keep the run inside a free Colab T4 session. The caps use seed 42 and a stratified draw.
+Class counts are negative / neutral / positive. The TagaSenti split is rebuilt from a single CSV. The other sets come from released files or public repositories. Each scoring set is capped at 2,000 rows, and the binary sets at 1,000, to keep the run inside a free Colab T4 session. The caps use seed 42 and a stratified draw.
 
 Models run at `MAX_LEN=128` with batch size 32 and fp16 autocast on GPU. The notebook reads `id2label` from each config when the labels are named. Four models have no usable label order, so a probe with two sentences per sentiment prints the inferred map before scoring. Two-label models run only on the binary sets. Three-class models on a binary set get their negative and positive probabilities renormalized.
 
@@ -192,11 +221,11 @@ The overlap audit is not done. `filisenti`'s TagaSenti cell is the known risk. T
 
 There are no confidence intervals. The caps are 1,001 to 2,000 rows. A gap under roughly two points should be treated as noise, and several gaps in this table are smaller than that.
 
-The new human-annotated set has only 190 neutral rows. The Lazada set has 123. Neutral recall on those sets has a wide error bar. The star-derived neutral label is also noisy, because three-star reviews are not always neutral in meaning.
+The human-annotated set has only 190 neutral rows. The Lazada set has 123. Neutral recall on those sets has a wide error bar. The star-derived neutral label is also noisy, because three-star reviews are not always neutral in meaning.
 
-Four models have inferred label orders. A probe error could move their rows. `raphgonda/FilipinoShopping` is still missing. The notebook has a TensorFlow fallback, but no rows for it appear in the CSV. The optional `letijo03` LoRA adapter was not run, so the model that trained on the Taglish file is absent from the table. That is good for the taglish column's cleanliness, but it means the roster is not exhaustive.
+Four models have inferred label orders. A probe error could move their rows. `raphgonda/FilipinoShopping` is still missing. The notebook has a TensorFlow fallback, but no rows for it appear in the CSV. The optional `letijo03` LoRA adapter was not run, so the model that trained on the Taglish file is absent from the table. That keeps the Taglish column cleaner, but it means the roster is not exhaustive.
 
-Calibration, latency, model size, and memory use are not measured. A model with a good F1 can still be too slow or too large for a phone. Domain overlap is possible even on the new sets. TagaSenti contains Shopee and Lazada reviews, so the family is domain-adjacent to both new e-commerce sets. The test set revisions are not pinned, so a rerun months from now may load different rows.
+Calibration, latency, model size, and memory use are not measured. A model with a good F1 can still be too slow or too large for a phone. Domain overlap is possible even on the non-Shopee sets. TagaSenti contains Shopee and Lazada reviews, so the family is domain-adjacent to both e-commerce sets. The test set revisions are not pinned, so a rerun months from now may load different rows.
 
 TagaSenti labels are partly LLM-generated, according to its model card. The Taglish set is human-annotated, but this repository does not report inter-annotator agreement. Label quality is a limitation on every column.
 
@@ -258,12 +287,9 @@ Replace the model ID with `jjjardev/filisenti` or `jjjardev/hilisenti-v1-model` 
 }
 ```
 
-## Changelog
+## Corrections
 
-- `v2.0.0`: added the human-annotated Taglish set, the Lazada set, and the gadgets contamination probe. Rebuilt the chart and notebook. Added the clean and home-turf framing and the FiliSenti overlap caveat.
-- `v1.2.0`: expanded README with the scoreboard, baseline analysis, model guide, metric definitions, and reproduction notes. Corrected the MTEB star mapping.
-- `v1.1.0`: renamed the repository to filisenti-benchmark. Added the DOST-ASTI comparison and per-class recall table.
-- `v1.0.0`: first public run, chart, notebook, and MIT license.
+If a score or label map looks wrong, open an issue with the row name and the notebook cell that produced it. The CSV is the source of truth, and a correction should start there.
 
 ## License
 
@@ -273,7 +299,7 @@ The code, notebook, and files in this repository use the MIT license. See `LICEN
 
 Models: [filisenti](https://huggingface.co/jjjardev/filisenti), [hilisenti-v1-model](https://huggingface.co/jjjardev/hilisenti-v1-model), [tagasenti_model](https://huggingface.co/jjjardev/tagasenti_model)
 
-Datasets: [TagaSenti](https://huggingface.co/datasets/jjjardev/tagasenti), [HiliSenti](https://huggingface.co/datasets/jjjardev/hilisenti-v1), [letijo03/shopee-sentiment](https://huggingface.co/datasets/letijo03/shopee-sentiment), [magixxixx computer reviews](https://huggingface.co/datasets/magixxixx/shopee-product-reviews-on-computer-category)
+Test data: [TagaSenti](https://huggingface.co/datasets/jjjardev/tagasenti), [HiliSenti](https://huggingface.co/datasets/jjjardev/hilisenti-v1), [Shopee binary](https://huggingface.co/datasets/scaredmeow/shopee-reviews-tl-binary), [MTEB FilipinoShopeeReviewsClassification](https://huggingface.co/datasets/mteb/FilipinoShopeeReviewsClassification), [letijo03/shopee-sentiment](https://huggingface.co/datasets/letijo03/shopee-sentiment), [EricEchemane Lazada reviews](https://github.com/EricEchemane/Filipino-Tagalog-Product-Reviews-Sentiment-Analysis), [magixxixx computer reviews](https://huggingface.co/datasets/magixxixx/shopee-product-reviews-on-computer-category)
 
 Benchmark outputs: [benchmark_results.csv](benchmark_results.csv), [benchmark_chart.png](benchmark_chart.png)
 
