@@ -1,0 +1,47 @@
+model,note,dataset,n,accuracy,macro_f1,recall_negative,recall_neutral,recall_positive
+jjjardev/tagasenti_model,yours,tagasenti_test,2000,0.8475,0.8475,0.8439,0.8515,0.8477
+jjjardev/tagasenti_model,yours,hilisenti_test,2000,0.587,0.585,0.6111,0.5805,0.5667
+jjjardev/tagasenti_model,yours,shopee_binary,1000,0.878,0.8768,0.778,,0.978
+jjjardev/tagasenti_model,yours,mteb_shopee_3class,2000,0.6535,0.5665,0.785,0.1825,0.7575
+jjjardev/filisenti,yours,tagasenti_test,2000,0.9325,0.9327,0.9233,0.9541,0.9205
+jjjardev/filisenti,yours,hilisenti_test,2000,0.929,0.9272,0.9593,0.8991,0.9211
+jjjardev/filisenti,yours,shopee_binary,1000,0.883,0.8825,0.816,,0.95
+jjjardev/filisenti,yours,mteb_shopee_3class,2000,0.651,0.568,0.8162,0.1975,0.7125
+jjjardev/hilisenti-v1-model,"yours, Hiligaynon",tagasenti_test,2000,0.643,0.6454,0.607,0.6815,0.6457
+jjjardev/hilisenti-v1-model,"yours, Hiligaynon",hilisenti_test,2000,0.93,0.9287,0.9363,0.9115,0.9383
+jjjardev/hilisenti-v1-model,"yours, Hiligaynon",shopee_binary,1000,0.881,0.8808,0.844,,0.918
+jjjardev/hilisenti-v1-model,"yours, Hiligaynon",mteb_shopee_3class,2000,0.6005,0.5648,0.78,0.405,0.5188
+dost-asti/RoBERTa-tl-sentiment-analysis,DOST-ASTI (iTANONG-DS),tagasenti_test,2000,0.528,0.4926,0.6043,0.193,0.7964
+dost-asti/RoBERTa-tl-sentiment-analysis,DOST-ASTI (iTANONG-DS),hilisenti_test,2000,0.5,0.4687,0.6369,0.2248,0.5782
+dost-asti/RoBERTa-tl-sentiment-analysis,DOST-ASTI (iTANONG-DS),shopee_binary,1000,0.785,0.7827,0.682,,0.888
+dost-asti/RoBERTa-tl-sentiment-analysis,DOST-ASTI (iTANONG-DS),mteb_shopee_3class,2000,0.5625,0.449,0.6112,0.0575,0.7662
+magixxixx/roberta-shopee-sentiment-gadgets,Shopee gadgets,tagasenti_test,2000,0.4185,0.3872,0.362,0.7106,0.1722
+magixxixx/roberta-shopee-sentiment-gadgets,Shopee gadgets,hilisenti_test,2000,0.2755,0.2166,0.0366,0.7628,0.1334
+magixxixx/roberta-shopee-sentiment-gadgets,Shopee gadgets,shopee_binary,1000,0.699,0.6922,0.848,,0.55
+magixxixx/roberta-shopee-sentiment-gadgets,Shopee gadgets,mteb_shopee_3class,2000,0.4305,0.4117,0.5575,0.3575,0.34
+sdbrgo/roberta-tagalog-sentiment-multiclass-classifier,synthetic Taglish,tagasenti_test,2000,0.493,0.4192,0.8708,0.0781,0.4768
+sdbrgo/roberta-tagalog-sentiment-multiclass-classifier,synthetic Taglish,hilisenti_test,2000,0.5135,0.4614,0.6883,0.1504,0.6227
+sdbrgo/roberta-tagalog-sentiment-multiclass-classifier,synthetic Taglish,shopee_binary,1000,0.705,0.6805,0.982,,0.428
+sdbrgo/roberta-tagalog-sentiment-multiclass-classifier,synthetic Taglish,mteb_shopee_3class,2000,0.4895,0.3351,0.9625,0.0,0.2612
+immortalizing-legacies/immortalizing-legacies-sentiment,,tagasenti_test,2000,0.6045,0.588,0.8439,0.3492,0.5861
+immortalizing-legacies/immortalizing-legacies-sentiment,,hilisenti_test,2000,0.467,0.3925,0.893,0.0885,0.3228
+immortalizing-legacies/immortalizing-legacies-sentiment,,shopee_binary,1000,0.912,0.912,0.9,,0.924
+immortalizing-legacies/immortalizing-legacies-sentiment,,mteb_shopee_3class,2000,0.6165,0.5881,0.8025,0.505,0.4862
+MENG21/stud-fac-eval-bert-base-uncased_v2,student-faculty eval,tagasenti_test,2000,0.3715,0.1806,1.0,0.0,0.0
+MENG21/stud-fac-eval-bert-base-uncased_v2,student-faculty eval,hilisenti_test,2000,0.369,0.1797,1.0,0.0,0.0
+MENG21/stud-fac-eval-bert-base-uncased_v2,student-faculty eval,shopee_binary,1000,0.5,0.3333,1.0,,0.0
+MENG21/stud-fac-eval-bert-base-uncased_v2,student-faculty eval,mteb_shopee_3class,2000,0.4,0.1905,1.0,0.0,0.0
+scaredmeow/xlnet-tagalog-sentiment-shopee,Shopee tl-binary,shopee_binary,1000,0.948,0.948,0.934,,0.962
+scaredmeow/roberta-tagalog-sentiment-shopee,Shopee tl-binary,tagasenti_test,2000,0.4915,0.388,0.8789,0.0,0.5464
+scaredmeow/roberta-tagalog-sentiment-shopee,Shopee tl-binary,hilisenti_test,2000,0.447,0.3234,0.9499,0.0,0.2769
+scaredmeow/roberta-tagalog-sentiment-shopee,Shopee tl-binary,shopee_binary,1000,0.909,0.909,0.89,,0.928
+scaredmeow/roberta-tagalog-sentiment-shopee,Shopee tl-binary,mteb_shopee_3class,2000,0.6485,0.4806,0.9,0.0,0.7212
+The-Thesis-Gods/lazada-xlm-roberta-sentiment,Lazada AutoTrain,shopee_binary,1000,0.892,0.8917,0.84,,0.944
+cardiffnlp/twitter-xlm-roberta-base-sentiment,multilingual baseline,tagasenti_test,2000,0.62,0.6152,0.7618,0.4609,0.6175
+cardiffnlp/twitter-xlm-roberta-base-sentiment,multilingual baseline,hilisenti_test,2000,0.562,0.5583,0.6856,0.5239,0.462
+cardiffnlp/twitter-xlm-roberta-base-sentiment,multilingual baseline,shopee_binary,1000,0.886,0.886,0.88,,0.892
+cardiffnlp/twitter-xlm-roberta-base-sentiment,multilingual baseline,mteb_shopee_3class,2000,0.6255,0.5374,0.8525,0.1625,0.63
+tabularisai/multilingual-sentiment-analysis,5-class collapsed,tagasenti_test,2000,0.543,0.5403,0.6326,0.4579,0.5248
+tabularisai/multilingual-sentiment-analysis,5-class collapsed,hilisenti_test,2000,0.518,0.5044,0.6003,0.6991,0.2841
+tabularisai/multilingual-sentiment-analysis,5-class collapsed,shopee_binary,1000,0.807,0.807,0.792,,0.822
+tabularisai/multilingual-sentiment-analysis,5-class collapsed,mteb_shopee_3class,2000,0.5605,0.4727,0.7512,0.1175,0.5913
